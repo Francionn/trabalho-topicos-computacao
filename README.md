@@ -39,3 +39,12 @@ A estagnação das métricas de acurácia global na faixa de 64% a 67% **não re
 1. Clone este repositório:
    ```bash
    git clone https://github.com/Francionn/trabalho-topicos-computa-o.git
+   ```
+2. Instale os requisitos:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Rode os scripts:
+   ```bash
+   python run.py
+   ```
