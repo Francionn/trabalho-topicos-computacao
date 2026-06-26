@@ -1,7 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, precision_score
+import mlflow
+import mlflow.sklearn
 
 df = pd.read_csv("csv/water_potability_limpo.csv")
 X = df.drop("Potability", axis=1)
@@ -34,17 +36,28 @@ rf_grid = GridSearchCV(
     verbose=1
 )
 
-print(" (RF) ")
-rf_grid.fit(X_train, y_train)
+mlflow.set_experiment("benchmarking_classificadores")
 
-melhor_rf = rf_grid.best_estimator_
-y_pred = melhor_rf.predict(X_test)
+with mlflow.start_run(run_name="Random Forest"):
+    print(" (RF) ")
+    rf_grid.fit(X_train, y_train)
 
-print("\n Melhores parâmetros encontrados para o RF:")
-print(rf_grid.best_params_)
+    melhor_rf = rf_grid.best_estimator_
+    y_pred = melhor_rf.predict(X_test)
 
-print("\n    Relatório de Classificação (RF Otimizado) ")
-print(classification_report(y_test, y_pred))
+    print("\n Melhores parâmetros encontrados para o RF:")
+    print(rf_grid.best_params_)
+    mlflow.log_params(rf_grid.best_params_)
 
-print("\n    Matriz de Confusão (RF Otimizado)    ")
-print(confusion_matrix(y_test, y_pred))
+    print("\n    Relatório de Classificação (RF Otimizado) ")
+    print(classification_report(y_test, y_pred))
+
+    print("\n    Matriz de Confusão (RF Otimizado)    ")
+    print(confusion_matrix(y_test, y_pred))
+
+    mlflow.log_metrics({
+        "f1_score": f1_score(y_test, y_pred),
+        "accuracy": accuracy_score(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred),
+    })
+    mlflow.sklearn.log_model(melhor_rf, "modelo RF")

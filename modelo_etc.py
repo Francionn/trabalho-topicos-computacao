@@ -1,7 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, precision_score
+import mlflow
+import mlflow.sklearn
 
 df = pd.read_csv("csv/water_potability_limpo.csv")
 X = df.drop("Potability", axis=1)
@@ -33,17 +35,28 @@ etc_grid = GridSearchCV(
     verbose=1
 )
 
-print(" (ETC)")
-etc_grid.fit(X_train, y_train)
+mlflow.set_experiment("benchmarking_classificadores")
 
-melhor_etc = etc_grid.best_estimator_
-y_pred = melhor_etc.predict(X_test)
+with mlflow.start_run(run_name="Extra Trees"):
+    print(" (ETC)")
+    etc_grid.fit(X_train, y_train)
 
-print("\nMelhores parâmetros encontrados para o ETC:")
-print(etc_grid.best_params_)
+    melhor_etc = etc_grid.best_estimator_
+    y_pred = melhor_etc.predict(X_test)
 
-print("\n    Relatório de Classificação (ETC Otimizado)    ")
-print(classification_report(y_test, y_pred))
+    print("\nMelhores parâmetros encontrados para o ETC:")
+    print(etc_grid.best_params_)
+    mlflow.log_params(etc_grid.best_params_)
 
-print("\n    Matriz de Confusão (ETC Otimizado)    ")
-print(confusion_matrix(y_test, y_pred))
+    print("\n    Relatório de Classificação (ETC Otimizado)    ")
+    print(classification_report(y_test, y_pred))
+
+    print("\n    Matriz de Confusão (ETC Otimizado)    ")
+    print(confusion_matrix(y_test, y_pred)) 
+
+    mlflow.log_metrics({
+        "f1_score": f1_score(y_test, y_pred),
+        "accuracy": accuracy_score(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred),
+    })
+    mlflow.sklearn.log_model(melhor_etc, "modelo ETC")

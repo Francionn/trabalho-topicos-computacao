@@ -1,7 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split, GridSearchCV
 from xgboost import XGBClassifier
-from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, accuracy_score, f1_score, precision_score
+import mlflow
+import mlflow.sklearn
 
 df = pd.read_csv("csv/water_potability_limpo.csv")
 
@@ -46,17 +48,39 @@ xgb_grid = GridSearchCV(
     verbose=1
 )
 
-print(" (XGB) ")
-xgb_grid.fit(X_train, y_train)
+mlflow.set_experiment("benchmarking_classificadores")
 
-melhor_xgb = xgb_grid.best_estimator_
-y_pred = melhor_xgb.predict(X_test)
-y_prob = melhor_xgb.predict_proba(X_test)[:, 1] 
+with mlflow.start_run(run_name="Extreme Gradient Boosting"):
+    print(" (XGB) ")
+    xgb_grid.fit(X_train, y_train)
 
-print("\n     Relatório de Classificação Definitivo    ")
-print(classification_report(y_test, y_pred))
+    trusted_types = [
+        "xgboost.core.Booster",
+        "xgboost.sklearn.XGBClassifier"
+    ]
 
-print("\n     Matriz de Confusão Definitiva     ")
-print(confusion_matrix(y_test, y_pred))
+    melhor_xgb = xgb_grid.best_estimator_
+    y_pred = melhor_xgb.predict(X_test)
+    y_prob = melhor_xgb.predict_proba(X_test)[:, 1] 
 
-print(f"\nROC-AUC Score: {roc_auc_score(y_test, y_prob):.4f}")
+    mlflow.log_params(xgb_grid.best_params_)
+
+    print("\n     Relatório de Classificação Definitivo    ")
+    print(classification_report(y_test, y_pred))
+
+    print("\n     Matriz de Confusão Definitiva     ")
+    print(confusion_matrix(y_test, y_pred))
+
+    print(f"\nROC-AUC Score: {roc_auc_score(y_test, y_prob):.4f}")
+
+    mlflow.log_metrics({
+        "f1_score": f1_score(y_test, y_pred),
+        "accuracy": accuracy_score(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred),
+    })
+    
+    mlflow.sklearn.log_model(
+        sk_model=melhor_xgb, 
+        artifact_path="modelo XGB",
+        skops_trusted_types=trusted_types
+    )
