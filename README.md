@@ -38,4 +38,4 @@ A estagnação das métricas de acurácia global na faixa de 64% a 67% **não re
 
 1. Clone este repositório:
    ```bash
-   git clone [https://github.com/Francionn/trabalho-topicos-computa-o.git](https://github.com/Francionn/trabalho-topicos-computa-o.git)
+   git clone https://github.com/Francionn/trabalho-topicos-computa-o.git
