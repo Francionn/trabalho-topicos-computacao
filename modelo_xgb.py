@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split, GridSearchCV
 from xgboost import XGBClassifier
-from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, accuracy_score, f1_score, precision_score
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score
 import mlflow
 import mlflow.sklearn
 
@@ -64,6 +64,22 @@ with mlflow.start_run(run_name="Extreme Gradient Boosting"):
     y_prob = melhor_xgb.predict_proba(X_test)[:, 1] 
 
     mlflow.log_params(xgb_grid.best_params_)
+    
+    model_info = mlflow.sklearn.log_model(
+        sk_model=melhor_xgb, 
+        name="modelo XGB",
+        skops_trusted_types=trusted_types
+    )
+    
+    eval_data = X_test.copy()
+    eval_data["Potability"] = y_test
+
+    evaluation_result = mlflow.evaluate(
+        model=model_info.model_uri,
+        data=eval_data,
+        targets="Potability",
+        model_type="classifier",
+    )
 
     print("\n     Relatório de Classificação Definitivo    ")
     print(classification_report(y_test, y_pred))
@@ -72,15 +88,3 @@ with mlflow.start_run(run_name="Extreme Gradient Boosting"):
     print(confusion_matrix(y_test, y_pred))
 
     print(f"\nROC-AUC Score: {roc_auc_score(y_test, y_prob):.4f}")
-
-    mlflow.log_metrics({
-        "f1_score": f1_score(y_test, y_pred),
-        "accuracy": accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred),
-    })
-    
-    mlflow.sklearn.log_model(
-        sk_model=melhor_xgb, 
-        artifact_path="modelo XGB",
-        skops_trusted_types=trusted_types
-    )

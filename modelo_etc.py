@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import ExtraTreesClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, precision_score
+from sklearn.metrics import classification_report, confusion_matrix
 import mlflow
 import mlflow.sklearn
 
@@ -48,15 +48,23 @@ with mlflow.start_run(run_name="Extra Trees"):
     print(etc_grid.best_params_)
     mlflow.log_params(etc_grid.best_params_)
 
+    model_info = mlflow.sklearn.log_model(
+        sk_model=melhor_etc,
+        name="modelo ETC"
+    )
+
+    eval_data = X_test.copy()
+    eval_data["Potability"] = y_test
+
+    evaluation_result = mlflow.evaluate(
+        model=model_info.model_uri,
+        data=eval_data,
+        targets="Potability",
+        model_type="classifier",
+    )
+
     print("\n    Relatório de Classificação (ETC Otimizado)    ")
     print(classification_report(y_test, y_pred))
 
     print("\n    Matriz de Confusão (ETC Otimizado)    ")
     print(confusion_matrix(y_test, y_pred)) 
-
-    mlflow.log_metrics({
-        "f1_score": f1_score(y_test, y_pred),
-        "accuracy": accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred),
-    })
-    mlflow.sklearn.log_model(melhor_etc, "modelo ETC")
