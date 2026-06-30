@@ -46,5 +46,5 @@ A estagnação das métricas de acurácia global na faixa de 64% a 67% **não re
    ```
 3. Rode os scripts:
    ```bash
-   python run.py
+   mlflow ui
    ```
