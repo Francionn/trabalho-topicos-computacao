@@ -23,8 +23,8 @@ Para comprovar a complexidade não-linear do problema e encontrar o ponto de equ
 
 | Modelo | Acurácia | F1-Score (Água Potável) | Falsos Positivos | Comportamento / Veredito |
 | :--- | :---: | :---: | :---: | :--- |
-| **Regressão Logística (LR)** | 61% | 0.00 | 0 | **Baseline (Falha Proposital):** Provou que as variáveis não são linearmente separáveis. A penalidade Lasso zerou os coeficientes, chutando tudo como Classe 0. |
-| **Random Forest (RF)** | 65% | 0.48 | 84 | **Robustez:** Equilíbrio clássico de florestas aleatórias. |
+| **Regressão Logística (LR)** | 54% | 0.48 | 187 | **Baseline (Falha Proposital):** Provou que as variáveis não são linearmente separáveis. Mesmo com pré-processamento o modelo ainda tem um desempenho inferior aos demais. |
+| **Random Forest (RF)** | 65% | 0.50 | 93 | **Robustez:** Equilíbrio clássico de florestas aleatórias. |
 | **Extra Trees (ETC)** | **67%** | 0.49 | **64** | **O Mais Seguro:** Realizou uma "poda" agressiva do ruído. Tem a maior precisão, sendo excelente para evitar que pessoas fiquem doentes, mas sacrifica muita água boa. |
 | **Support Vector Machine (SVM)** | 62% | **0.51** | 119 | **O Agressivo:** Usando limites geométricos (`C=10`, `RBF`), encontrou o maior volume de amostras de água potável, mas com maior risco sanitário. |
 | **XGBoost (Campeão)** | 64% | **0.51** | 102 | **O Ponto de Equilíbrio:** Aliado às regras de negócio da OMS, obteve o melhor balanço geral. Maximizou o acerto na classe minoritária sem explodir os falsos positivos. |
@@ -44,7 +44,7 @@ A estagnação das métricas de acurácia global na faixa de 64% a 67% **não re
    ```bash
    pip install -r requirements.txt
    ```
-3. Rode os scripts:
+3. Rode a interface do mlflow:
    ```bash
    mlflow ui
    ```
