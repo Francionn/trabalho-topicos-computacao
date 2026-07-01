@@ -1,0 +1,23 @@
+artifact_path: /home/kyoma/projects/trabalho-topicos-computa-o/mlruns/1/models/m-57f5c09c023840288a5bf23391d5235f/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.12.3
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types: null
+mlflow_version: 3.14.0
+model_id: m-57f5c09c023840288a5bf23391d5235f
+model_size_bytes: 196255
+model_uuid: m-57f5c09c023840288a5bf23391d5235f
+prompts: null
+run_id: db46bd6223d043428bd608f11cde2085
+utc_time_created: '2026-06-27 13:19:12.432854'

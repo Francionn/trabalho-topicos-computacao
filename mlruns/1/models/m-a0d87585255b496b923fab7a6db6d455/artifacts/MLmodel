@@ -1,0 +1,25 @@
+artifact_path: /home/kyoma/projects/trabalho-topicos-computa-o/mlruns/1/models/m-a0d87585255b496b923fab7a6db6d455/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.skops
+    predict_fn: predict
+    python_version: 3.12.3
+  sklearn:
+    code: null
+    pickled_model: model.skops
+    serialization_format: skops
+    sklearn_version: 1.9.0
+    skops_trusted_types:
+    - xgboost.core.Booster
+    - xgboost.sklearn.XGBClassifier
+mlflow_version: 3.14.0
+model_id: m-a0d87585255b496b923fab7a6db6d455
+model_size_bytes: 603451
+model_uuid: m-a0d87585255b496b923fab7a6db6d455
+prompts: null
+run_id: 7f750070e4c0433ea6890edc9a5ec181
+utc_time_created: '2026-06-27 13:19:58.962248'
