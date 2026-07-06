@@ -1,6 +1,6 @@
 #  Previsão de Potabilidade da Água: Uma Abordagem de Machine Learning para Saúde Pública
 
-> ** Apresentação:** [Clique aqui para acessar os Slides da Apresentação do Trabalho de Conclusão](#adicione_o_seu_link_aqui)
+**Vídeo da apresentação:** [Clique aqui para assistir à apresentação do Trabalho de Conclusão](https://youtu.be/9fjNMuaL-is)
 
 ##  Contexto do Projeto
 Garantir o acesso à água potável é um dos maiores desafios da saúde pública global. Este projeto tem como objetivo desenvolver um modelo preditivo capaz de classificar amostras de água como potáveis (Classe 1) ou não potáveis (Classe 0) com base em variáveis químicas (pH, Sulfato, Dureza, Sólidos, etc.). 
